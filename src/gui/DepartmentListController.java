@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-
 import application.Main;
 import gui.util.Alerts;
 import gui.util.Utils;
@@ -100,7 +99,7 @@ public class DepartmentListController implements Initializable{
 			dialogStage.setScene(new Scene(pane));
 			dialogStage.setResizable(false);
 			dialogStage.initOwner(parentStage);
-			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.initModality(Modality.WINDOW_MODAL); //NAO PERMITE MINIMIZAR A JANELA
 			dialogStage.showAndWait();
 			
 		}
