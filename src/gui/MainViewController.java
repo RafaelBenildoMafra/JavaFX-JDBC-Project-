@@ -3,6 +3,8 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+
 import application.Main;
 import gui.util.Alerts;
 import javafx.fxml.FXML;
@@ -39,14 +41,19 @@ public class MainViewController implements Initializable{
 	@FXML
 	public void onMenuItemDepartmentAction() {
 		
-		loadView2("/gui/DepartmentList.fxml");
+		loadView("/gui/DepartmentList.fxml", (DepartmentListController controller) ->{
+			
+			controller.setDepartmentService(new DepartmentService ());
+			controller.updateTableView();
+			
+		});
 		
 	}
 	
 	@FXML
 	public void onMenuItemAboutAction() {
 		
-		loadView("/gui/About.fxml");
+		loadView("/gui/About.fxml", x -> {});
 		
 	}
 	
@@ -57,9 +64,10 @@ public class MainViewController implements Initializable{
 		
 	}
 	
-	private synchronized void loadView(String absoluteName) {
+	private synchronized <T> void loadView(String absoluteName, Consumer<T> initializingAction) {
 		
 	try {	
+		
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 		VBox newVBox = loader.load();
 		
@@ -74,6 +82,9 @@ public class MainViewController implements Initializable{
 		mainVBox.getChildren().addAll(newVBox.getChildren());//PEGA OS FILHOS DO NEWVBOX
 		
 		
+			T controller = loader.getController(); //MEU GET CONTROLER RETORNA O CONTROLADOR DO TIPO QUE EU CHAMAR
+			initializingAction.accept(controller); //EXECUTA A FUNÇÃO QUE EU PASSEI COMO ARGUMENTO
+		
 		}
 		catch(IOException e) {
 			
@@ -82,36 +93,5 @@ public class MainViewController implements Initializable{
 		}
 
 	}
-	
-	private synchronized void loadView2(String absoluteName) {
-		
-		try {	
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-			VBox newVBox = loader.load();
-			
-			Scene mainScene = Main.getMainScene();
-			VBox mainVBox = (VBox)((ScrollPane) mainScene.getRoot()).getContent();//PEGA O PRIMEIRO ELEMENTO DA VIEW
-			
-			
-			//INCLUI NA JANELA PRINCIPAL O MAIN MENU E OS FILHOS DAS JANELAS QUE EU ESTIVER ABRINDO(newVBOX)
-			Node mainMenu = mainVBox.getChildren().get(0);//PRIMEIRO FILHO DO MAINVBOX - MAINMENU
-			mainVBox.getChildren().clear();//LIMPA TODOS OS FILHOS DO MAI VBOX
-			mainVBox.getChildren().add(mainMenu);//PEGA O MAINMENU
-			mainVBox.getChildren().addAll(newVBox.getChildren());//PEGA OS FILHOS DO NEWVBOX
-			
-			DepartmentListController controller = loader.getController(); //PEGA UMA REFERENCIA AO CONTROLE DA VIEW
-			controller.setDepartmentService(new DepartmentService());
-			controller.updateTableView();
-			
-			
-			}
-			catch(IOException e) {
-				
-				Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
-				
-			}
-
-		}
-	
 
 }
