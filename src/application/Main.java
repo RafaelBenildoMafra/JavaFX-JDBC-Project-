@@ -18,7 +18,7 @@ public class Main extends Application {
 		try {
 			
 			//INSTANCIAMOS O OBJETO LOADER
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource( "/gui/MainView.fxml"));
 			ScrollPane scrollPane = loader.load();
 			
 			//DIMENSIONA AUTOMATICAMENTE A BARRA DE TAREFAS
