@@ -29,4 +29,10 @@ public class DepartmentService {
 			
 		}
 	}
+	
+	//REMOVE UM DEPARTAMENTO DO DATABSE
+	public void remove(Department obj) {
+		
+		dao.deleteById(obj.getId());
+	}
 }
