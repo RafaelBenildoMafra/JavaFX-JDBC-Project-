@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 import application.Main;
 import db.DbIntegrityException;
 import gui.util.Alerts;
@@ -38,6 +40,15 @@ public class SellerListController implements Initializable, DataChangeListener{
 	
 	@FXML //Coluna do nome
 	private TableColumn<Seller,String> tableColumnName;
+	
+	@FXML 
+	private TableColumn<Seller,String> tableColumnEmail;
+	
+	@FXML 
+	private TableColumn<Seller,Date> tableColumnBirthDate;
+	
+	@FXML 
+	private TableColumn<Seller,Double> tableColumnBasesalary;
 	
 	@FXML
 	private TableColumn<Seller, Seller> tableColumnEDIT;
@@ -74,7 +85,12 @@ public class SellerListController implements Initializable, DataChangeListener{
 	private void initializeNodes() {
 		
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("Name"));
+		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy");
+		tableColumnBasesalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+		Utils.formatTableColumnDouble(tableColumnBasesalary, 2);
 		
 		//FAZ O TABLE VIEW ACOMPANHAR A ALTURA DA JANELA
 		Stage stage = (Stage) Main.getMainScene().getWindow();
