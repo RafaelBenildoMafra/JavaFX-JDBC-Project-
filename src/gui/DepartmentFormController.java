@@ -112,7 +112,7 @@ public class DepartmentFormController implements Initializable{
 		
 		if(txtname.getText() == null || txtname.getText().trim().equals("")) {//VERIFICA SE A CAIXA DE TEXTO ESTA VAZIA
 			
-			exception.addError("Name", "Field can't be open");
+			exception.addError("name", "Field can't be open");
 		}
 		obj.setName(txtname.getText());
 		
