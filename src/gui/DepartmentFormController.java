@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import db.DbException;
 import gui.util.Alerts;
 import gui.util.Constraints;
@@ -17,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.exception.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable{
@@ -79,10 +82,16 @@ public class DepartmentFormController implements Initializable{
 		Utils.currentStage(event).close(); //FECHA A JANELA
 		
 		}
+		
+		catch(ValidationException e) {
+			
+			setErrorMessages(e.getErrors());
+		}
 		catch (DbException e) {
 			
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
+		
 	}
 	
 	private void notifyDataChangeListeners() { //EMITE O EVENTO
@@ -97,8 +106,21 @@ public class DepartmentFormController implements Initializable{
 	private Department getFormData() {
 		Department obj = new Department();
 		
+		ValidationException exception = new ValidationException("Validation Error");
+		
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		
+		if(txtname.getText() == null || txtname.getText().trim().equals("")) {//VERIFICA SE A CAIXA DE TEXTO ESTA VAZIA
+			
+			exception.addError("Name", "Field can't be open");
+		}
 		obj.setName(txtname.getText());
+		
+		if(exception.getErrors().size() > 0) {//TEM PELO MENOS UM ERRO
+			
+			throw exception;
+			
+		}
 		
 		return obj;
 	}
@@ -134,6 +156,18 @@ public class DepartmentFormController implements Initializable{
 		
 	}
 	
-	
+	private void setErrorMessages(Map<String, String> errors) {
+		
+		//Percorre a coleção preenchendo o label com as mensagens de erro
+		
+		Set<String> fields = errors.keySet();
+		
+		if(fields.contains("name")) {
+			
+			labelErrorName.setText(errors.get("name"));
+			
+		}
+		
+	}
 
 }
