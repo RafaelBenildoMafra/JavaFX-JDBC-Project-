@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -16,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Seller;
@@ -37,7 +41,25 @@ public class SellerFormController implements Initializable{
 	private TextField txtname;
 	
 	@FXML
+	private DatePicker birthDate;
+	
+	@FXML
+	private TextField baseSalary;
+	
+	@FXML
+	private TextField Email;
+	
+	@FXML
 	private Label labelErrorName;
+	
+	@FXML
+	private Label labelErrorBaseSalary;
+	
+	@FXML
+	private Label labelErrorEmail;
+	
+	@FXML
+	private Label labelErrorBirthDate;
 	
 	@FXML
 	private Button btSave;
@@ -137,12 +159,18 @@ public class SellerFormController implements Initializable{
 		
 	}
 	
+	
 	private void initializeNodes() {
 		
 		Constraints.setTextFieldInteger(txtId);
-		Constraints.setTextFieldMaxLength(txtname, 30);
+		Constraints.setTextFieldMaxLength(txtname, 70);
+		Constraints.setTextFieldDouble(baseSalary);
+		Constraints.setTextFieldMaxLength(Email, 60);
+		Utils.formatDatePicker(birthDate, "dd/MM/yyyy");
+		
 	}
-//COLOCAR OS DADOS DO TIPO DEPARTAMENTO NAS CAIXAS DE TEXTO
+	
+//COLOCAR OS DADOS DO TIPO Seller NAS CAIXAS DE TEXTO
 	public void updateFormdata() {
 		
 		if(entity == null) {
@@ -152,6 +180,12 @@ public class SellerFormController implements Initializable{
 		
 		txtId.setText(String.valueOf(entity.getId()));//CONVERTE INTEIRO PARA STRING
 		txtname.setText(entity.getName());
+		Email.setText(entity.getEmail());
+		Locale.setDefault(Locale.US);
+		baseSalary.setText(String.format("%.2f", entity.getBaseSalary()));
+		if(entity.getBirthDate() != null) {
+		birthDate.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(),ZoneId.systemDefault()) );
+		}
 		
 		
 	}

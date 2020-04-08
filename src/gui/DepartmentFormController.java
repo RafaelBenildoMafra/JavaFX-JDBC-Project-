@@ -76,7 +76,7 @@ public class DepartmentFormController implements Initializable{
 		
 		try {
 		
-		entity = getFormData(); //PEGA OS DADOS DO FORMULARIO E INSTANCIA UM DEPARTAMENTO
+		entity = getFormData(); //PEGA OS DADOS DO FORMULARIO E INSTANCIA UM SELLER
 		service.saveOrUpdate(entity); //SALVA NO BANCO DE DADOS
 		notifyDataChangeListeners();
 		Utils.currentStage(event).close(); //FECHA A JANELA
