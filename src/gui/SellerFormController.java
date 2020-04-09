@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -143,16 +145,46 @@ public class SellerFormController implements Initializable{
 
 	private Seller getFormData() {
 		Seller obj = new Seller();
-		
+							//TRATAMENTO
 		ValidationException exception = new ValidationException("Validation Error");
 		
-		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		obj.setId(Utils.tryParseToInt(txtId.getText()));//PEGA O VALOR EM STRING E TENTA CONVERTER EM INTEIRO SE NAO DER SERTO RETORNA NULL
 		
 		if(txtname.getText() == null || txtname.getText().trim().equals("")) {//VERIFICA SE A CAIXA DE TEXTO ESTA VAZIA
 			
-			exception.addError("name", "Field can't be open");
+			exception.addError("name", "Field can't be empty");
 		}
 		obj.setName(txtname.getText());
+		
+		
+		if (Email.getText() == null || Email.getText().trim().equals("")) {// VERIFICA SE A CAIXA DE TEXTO ESTA
+																				// VAZIA
+
+			exception.addError("Email", "Field can't be empty");
+		}
+		obj.setEmail(Email.getText());
+		
+		//TRATAMENTO DA DATA
+		if(birthDate.getValue() == null) {
+			
+			exception.addError("birthDate", "Field can't be empty");
+		}
+		else {
+			
+		
+		Instant instant = Instant.from(birthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+		obj.setBirthDate(Date.from(instant));
+		}
+		
+		
+		//TRATAMENTO DO SALÁRIO
+		if (baseSalary.getText() == null || baseSalary.getText().trim().equals("")) {// VERIFICA SE A CAIXA DE TEXTO ESTA															// VAZIA
+
+			exception.addError("baseSalary", "Field can't be empty");
+		}
+		obj.setBaseSalary(Utils.tryParseToDouble(baseSalary.getText()));
+		
+		obj.setDepartment(comboBoxDepartment.getValue());
 		
 		if(exception.getErrors().size() > 0) {//TEM PELO MENOS UM ERRO
 			
@@ -236,13 +268,13 @@ public class SellerFormController implements Initializable{
 		//Percorre a coleção preenchendo o label com as mensagens de erro
 		
 		Set<String> fields = errors.keySet();
-		
-		if(fields.contains("name")) {
-			
-			labelErrorName.setText(errors.get("name"));
-			
-		}
-		
+	
+		//TERCEIRA SOLUÇÃO IF ELSE COMPRIMIDO SE NAO CONTEM O ESPAÇO PREENCHIDO MOSTRA O ERRO SE NAO DEIXA VAZIO!!
+		labelErrorName.setText((fields.contains("name")) ? errors.get("name"): "");
+		labelErrorEmail.setText((fields.contains("Email")) ? errors.get("Email"): "");
+		labelErrorBaseSalary.setText((fields.contains("baseSalary")) ? errors.get("baseSalary"): "");
+		labelErrorBirthDate.setText((fields.contains("birthDate")) ? errors.get("birthDate"): "");
+	
 	}
 	
 	private void initializeComboBoxDepartment() {
